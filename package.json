@@ -46,16 +46,15 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.6.3",
     "ts-jest": "^26.4.4",
-    "typescript": "^4.0.5",
-    "uuid": "^8.3.1"
+    "typescript": "^4.0.5"
   },
   "dependencies": {
+    "uuid": "^8.3.1"
   },
   "peerDependencies": {
     "@nestjs/common": "^6.7.0 || ^7.5.1",
     "@nestjs/core": "^6.7.0 || ^7.5.1",
-    "rxjs": "^6.6.3",
-    "uuid": "^8.3.1"
+    "rxjs": "^6.6.3"
   },
   "files": [
     "dist"
