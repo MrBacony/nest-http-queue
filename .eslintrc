@@ -1,7 +1,7 @@
 {
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
-        "project": "tsconfig.json",
+        "project": "./tsconfig.json",
         "sourceType": "module"
     },
     "plugins": [
@@ -13,6 +13,7 @@
         "prettier",
         "prettier/@typescript-eslint"
     ],
+    "ignorePatterns": ["**/*.spec.ts"],
     "root": true,
     "env": {
         "node": true,
