@@ -1,6 +1,6 @@
 {
   "name": "@codemonkeys-island/nest-http-queue",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Nest.JS module for handling rate-limited http calls",
   "main": "./dist/index.js",
   "scripts": {
@@ -8,7 +8,12 @@
     "publish:npm": "npm publish --access public",
     "format": "prettier --write \\\"lib/**/*.ts\\\"",
     "lint": "eslint 'lib/**/*.ts' --fix",
-    "test": "jest --config jest.config.json --watch"
+    "test": "jest --config jest.config.json --watch",
+    "bump-version:major": "npm version major --no-git-tag-version",
+    "bump-version:minor": "npm version minor --no-git-tag-version",
+    "bump-version:patch": "npm version patch --no-git-tag-version",
+    "commit-version": "VERSION=$(node -e \"(function () { console.log(require('./package.json').version) })()\") && git commit package.json -m\"Bumped Version to $VERSION\"",
+    "tag-version": "VERSION=$(node -e \"(function () { console.log(require('./package.json').version) })()\") && git tag \"v$VERSION\" && git push origin \"v$VERSION\""
   },
   "repository": {
     "type": "git",
