@@ -104,4 +104,4 @@ export class AppModule {
 
 ## License
 
-- Nest Http Schedule is [MIT licensed](LICENSE).
+- Nest Http Queue is [MIT licensed](LICENSE).
