@@ -27,7 +27,7 @@ $ npm i --save @codemonkeys-island/nest-http-queue
 
 
 ## Usage
-
+Import the HttpQueueModule in your app.module.ts (or feature module)
 ```typescript
 import { Module } from '@nestjs/common';
 import { HttpQueueModule } from '@codemonkeys-island/nest-http-queue';
@@ -41,6 +41,7 @@ export class AppModule {
 }
 ```
 
+Inject the Queue Service and use it like the HttpService.
 ```typescript
 import { Injectable } from '@nestjs/common'; import { HttpQueueService } from "./http-queue.service";
 import { HttpQueueService } from '@codemonkeys-island/nest-http-queue'; import { Observable } from "rxjs"; import { AxiosResponse } from "axios";
@@ -60,7 +61,7 @@ export class RequestService {
 }
 ```
 
-### Supported Http Requests:
+### Supported http requests:
 - GET
 - POST
 - PUT
