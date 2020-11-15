@@ -1,6 +1,5 @@
 import { HttpService, Inject, Injectable } from '@nestjs/common';
 import {
-  HttpQueueResponse,
   QueueConfig,
   QueueResponse,
   QueueRequestContainer,
@@ -9,7 +8,7 @@ import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 import { filter, map, switchMap, take } from 'rxjs/operators';
 import { rateLimit } from "../rxjs";
 import { v4 as uuidv4 } from 'uuid';
-import { AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 
 @Injectable()
 export class HttpQueueService {
@@ -39,7 +38,7 @@ export class HttpQueueService {
   private doRequest<T>(
     fn: () => Observable<any>,
     rule = 'rule',
-  ): Observable<HttpQueueResponse<T>> {
+  ): Observable<AxiosResponse<T>> {
     const uuid = uuidv4();
 
     return this.queueRequest(rule, { fn, uuid, rule }).pipe(
@@ -81,7 +80,7 @@ export class HttpQueueService {
   public request<T = any>(
     config: AxiosRequestConfig,
     rule = 'rule',
-  ): Observable<HttpQueueResponse<T>> {
+  ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.request(config).pipe(
         map(({ data, status, statusText, headers }) => ({
@@ -98,7 +97,7 @@ export class HttpQueueService {
     url: string,
     config?: AxiosRequestConfig,
     rule = 'rule',
-  ): Observable<HttpQueueResponse<T>> {
+  ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.get(url, config).pipe(
         map(({ data, status, statusText, headers }) => ({
@@ -115,7 +114,7 @@ export class HttpQueueService {
     url: string,
     config?: AxiosRequestConfig,
     rule = 'rule',
-  ): Observable<HttpQueueResponse<T>> {
+  ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.delete(url, config).pipe(
         map(({ data, status, statusText, headers }) => ({
@@ -132,7 +131,7 @@ export class HttpQueueService {
     url: string,
     config?: AxiosRequestConfig,
     rule = 'rule',
-  ): Observable<HttpQueueResponse<T>> {
+  ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.head(url, config).pipe(
         map(({ data, status, statusText, headers }) => ({
@@ -150,7 +149,7 @@ export class HttpQueueService {
     postData?: any,
     config?: AxiosRequestConfig,
     rule = 'rule',
-  ): Observable<HttpQueueResponse<T>> {
+  ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.post(url, postData, config).pipe(
         map(({ data, status, statusText, headers }) => ({
@@ -168,7 +167,7 @@ export class HttpQueueService {
     putData?: any,
     config?: AxiosRequestConfig,
     rule = 'rule',
-  ): Observable<HttpQueueResponse<T>> {
+  ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.put(url, putData, config).pipe(
         map(({ data, status, statusText, headers }) => ({
@@ -186,7 +185,7 @@ export class HttpQueueService {
     patchData?: any,
     config?: AxiosRequestConfig,
     rule = 'rule',
-  ): Observable<HttpQueueResponse<T>> {
+  ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.patch(url, patchData, config).pipe(
         map(({ data, status, statusText, headers }) => ({

@@ -1,6 +1,6 @@
-import { HttpQueueResponse } from "./http-queue-response.interface";
 import { QueueRequestContainer } from "./queue-request-container.interface";
+import { AxiosResponse } from "axios";
 
 export interface QueueResponse extends QueueRequestContainer {
-  response: HttpQueueResponse<any>;
+  response: AxiosResponse;
 }
