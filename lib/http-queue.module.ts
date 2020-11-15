@@ -1,6 +1,6 @@
 import { DynamicModule, HttpModule, Module } from '@nestjs/common';
-import { HttpQueueService } from './http-queue.service';
-import { QueueConfig } from './http-queue';
+import { HttpQueueService } from './services';
+import { QueueConfig } from './interfaces';
 
 @Module({
   imports: [HttpModule],

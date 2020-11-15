@@ -2,12 +2,12 @@
   "name": "@codemonkeys-island/nest-http-queue",
   "version": "0.0.2",
   "description": "Nest.JS module for handling rate-limited http calls",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "build": "rm -rf dist && tsc -p tsconfig.json",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "publish:npm": "npm publish --access public",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint 'src/**/*.ts' --fix",
+    "format": "prettier --write \\\"lib/**/*.ts\\\"",
+    "lint": "eslint 'lib/**/*.ts' --fix",
     "test": "jest --config jest.config.json --watch"
   },
   "repository": {
@@ -26,6 +26,7 @@
   "bugs": {
     "url": "https://github.com/MrBacony/nest-http-queue/issues"
   },
+  "typings": "./dist/index.d.ts",
   "homepage": "https://github.com/MrBacony/nest-http-queue#readme",
   "devDependencies": {
     "@nestjs/cli": "^7.5.2",
@@ -37,7 +38,6 @@
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.7.0",
     "@typescript-eslint/parser": "^4.7.0",
-    "axios": "^0.21.0",
     "eslint": "^7.13.0",
     "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-import": "^2.22.1",
@@ -49,12 +49,13 @@
     "typescript": "^4.0.5"
   },
   "dependencies": {
+    "axios": "^0.21.0",
     "uuid": "^8.3.1"
   },
   "peerDependencies": {
-    "@nestjs/common": "^6.7.0 || ^7.5.1",
-    "@nestjs/core": "^6.7.0 || ^7.5.1",
-    "rxjs": "^6.6.3"
+    "@nestjs/common": ">=6.7.0",
+    "@nestjs/core": ">= 6.7.0",
+    "rxjs": ">=6.0.0"
   },
   "files": [
     "dist"

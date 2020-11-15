@@ -2,13 +2,12 @@ import { HttpService, Inject, Injectable } from '@nestjs/common';
 import {
   HttpQueueResponse,
   QueueConfig,
-  QueueRequest,
   QueueResponse,
   QueueRequestContainer,
-} from './http-queue';
+} from '../interfaces';
 import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
 import { filter, map, switchMap, take } from 'rxjs/operators';
-import { rateLimit } from './rxjs/rate-limit.operator';
+import { rateLimit } from "../rxjs";
 import { v4 as uuidv4 } from 'uuid';
 import { AxiosRequestConfig } from "axios";
 
@@ -38,7 +37,7 @@ export class HttpQueueService {
   }
 
   private doRequest<T>(
-    fn: QueueRequest,
+    fn: () => Observable<any>,
     rule = 'rule',
   ): Observable<HttpQueueResponse<T>> {
     const uuid = uuidv4();
