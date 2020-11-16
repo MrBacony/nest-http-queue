@@ -71,11 +71,29 @@ export class RequestService {
 - DELETE
 
 ### Initialize Module with configuration
-Default configruation for rate limit queue is 10 requests per 10000ms.
+Default configruation for rate limit queue is 10 requests per 10000ms and a shared queue ist disabled.
+
+If a project needs a shared queue (if the request resources are limited for example) please enable it via `sharedQueue: true`.
+
 ```json5
 {
-  maxRequests: 10,
-  timespan: 10000,
+  default: {
+    sharedQueue: false,
+    maxRequests: 10,
+    timespan: 10000,
+  }
+}
+``` 
+
+For specific hosts you could define specific rules.
+```json5
+{
+  rules: {
+    "api.test.com": {
+      maxRequests: 10,
+      timespan: 10000,
+    } 
+  },
 }
 ``` 
 
