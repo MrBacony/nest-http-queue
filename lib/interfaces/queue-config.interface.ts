@@ -4,5 +4,5 @@ export interface QueueConfig {
   rules?: {
     [key: string]: LimiterRule;
   };
-  default?: LimiterRule;
+  default?: LimiterRule & {sharedQueue: boolean};
 }

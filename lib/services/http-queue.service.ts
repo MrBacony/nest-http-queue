@@ -12,6 +12,7 @@ export class HttpQueueService {
   private response$Map: Map<string, Observable<QueueResponse>> = new Map();
   private readonly config: QueueConfig = {
     default: {
+      sharedQueue: false,
       maxRequests: 10,
       timespan: 10000
     }
@@ -84,7 +85,7 @@ export class HttpQueueService {
         }))
       );
 
-    if (!rule) {
+    if (!rule && !this.config.default.sharedQueue) {
       rule = new URL(config?.url).host;
     }
     return this.doRequest<T>(reqFn, rule);
@@ -105,7 +106,7 @@ export class HttpQueueService {
         }))
       );
 
-    if (!rule) {
+    if (!rule && !this.config.default.sharedQueue) {
       rule = new URL(url).host;
     }
     return this.doRequest<T>(reqFn, rule);
@@ -126,7 +127,7 @@ export class HttpQueueService {
         }))
       );
 
-    if (!rule) {
+    if (!rule && !this.config.default.sharedQueue) {
       rule = new URL(url).host;
     }
     return this.doRequest<T>(reqFn, rule);
@@ -147,7 +148,7 @@ export class HttpQueueService {
         }))
       );
 
-    if (!rule) {
+    if (!rule && !this.config.default.sharedQueue) {
       rule = new URL(url).host;
     }
     return this.doRequest<T>(reqFn, rule);
@@ -169,7 +170,7 @@ export class HttpQueueService {
         }))
       );
 
-    if (!rule) {
+    if (!rule && !this.config.default.sharedQueue) {
       rule = new URL(url).host;
     }
     return this.doRequest<T>(reqFn, rule);
@@ -191,7 +192,7 @@ export class HttpQueueService {
         }))
       );
 
-    if (!rule) {
+    if (!rule && !this.config.default.sharedQueue) {
       rule = new URL(url).host;
     }
     return this.doRequest<T>(reqFn, rule);
@@ -213,7 +214,7 @@ export class HttpQueueService {
         }))
       );
 
-    if (!rule) {
+    if (!rule && !this.config.default.sharedQueue) {
       rule = new URL(url).host;
     }
     return this.doRequest<T>(reqFn, rule);

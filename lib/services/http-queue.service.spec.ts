@@ -13,6 +13,12 @@ describe('HttpQueueService', () => {
         {
           provide: 'QUEUE_CONFIG',
           useValue: {
+            rules: {
+              "api.test2.com": {
+                maxRequests: 50,
+                timespan: 1000
+              }
+            },
             default: {
               maxRequests: 10,
               timespan: 1000,
@@ -43,7 +49,7 @@ describe('HttpQueueService', () => {
       { cnt: 20, execRange: [1, 2] },
       { cnt: 30, execRange: [2, 3] },
     ].forEach((rangeCnt) => {
-      it(`should fire ${rangeCnt.cnt} requests  (10 req per 1sec)`, (done) => {
+      it(`should fire ${rangeCnt.cnt} requests for default rule (10 req per 1sec)`, (done) => {
         const result = {
           data: {},
           status: 200,
@@ -65,6 +71,33 @@ describe('HttpQueueService', () => {
               expect((endTime - time) / 1000).toBeLessThan(
                 rangeCnt.execRange[1],
               );
+              done();
+            }
+          });
+        });
+      });
+
+      it(`should fire ${rangeCnt.cnt} requests for api.test2.com rule (50 req per 1sec)`, (done) => {
+        const result = {
+          data: {},
+          status: 200,
+          statusText: 'OK',
+          headers: {},
+          config: {},
+        };
+        jest.spyOn(httpService, 'get').mockImplementation(() => of(result));
+
+        const maxCnt = rangeCnt.cnt;
+        const time = Date.now();
+        range(1, maxCnt).subscribe((cnt) => {
+          service.get('http://api.test2.com').subscribe(() => {
+            if (cnt === maxCnt) {
+              const endTime = Date.now();
+              expect((endTime - time) / 1000).toBeGreaterThanOrEqual(0);
+              expect((endTime - time) / 1000).toBeLessThanOrEqual(1);
+
+              expect(service.currentActiveRules.length).toEqual(1);
+              expect(service.currentActiveRules[0]).toEqual('api.test2.com');
               done();
             }
           });
@@ -107,5 +140,46 @@ describe('HttpQueueService', () => {
       expect(service.currentActiveRules[0]).toEqual('rule1');
       expect(service.currentActiveRules[1]).toEqual('rule2');
     });
+  });
+});
+
+describe('HttpQueueService sharedQueue', () => {
+  let service: HttpQueueService;
+  let httpService: HttpService;
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        HttpQueueService,
+        {
+          provide: 'QUEUE_CONFIG',
+          useValue: {
+            default: {
+              sharedQueue: true,
+              maxRequests: 10,
+              timespan: 1000,
+            },
+          },
+        },
+        {
+          provide: HttpService,
+          useValue: {
+            get: () => {
+            },
+          },
+        },
+      ],
+    }).compile();
+
+    service = module.get<HttpQueueService>(HttpQueueService);
+    httpService = module.get<HttpService>(HttpService);
+  });
+
+  it('should return a shared queue with one active rule and two requests', () => {
+    service.get('http://api.test.com');
+    service.get('http://api.test2.com');
+
+    expect(service.currentActiveRules.length).toEqual(1);
+
+    expect(service.currentActiveRules[0]).toEqual('rule');
   });
 });
