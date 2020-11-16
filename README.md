@@ -65,17 +65,17 @@ export class RequestService {
 GET, POST, PUT, PATCH, HEAD, REQUEST, DELETE
 
 ```typescript
-return this.httpQueueService.get<any>('https://api.url.com');
+this.httpQueueService.get<any>('https://api.url.com');
 
-return this.httpQueueService.post<any>('https://api.url.com', {});
+this.httpQueueService.post<any>('https://api.url.com', {});
 
-return this.httpQueueService.put<any>('https://api.url.com', {});
+this.httpQueueService.put<any>('https://api.url.com', {});
 
-return this.httpQueueService.patch<any>('https://api.url.com', {});
+this.httpQueueService.patch<any>('https://api.url.com', {});
 
-return this.httpQueueService.head<any>('https://api.url.com');
+this.httpQueueService.head<any>('https://api.url.com');
 
-return this.httpQueueService.request<any>({url: 'https://api.url.com'});
+this.httpQueueService.request<any>({url: 'https://api.url.com'});
 ```
 
 ### Initialize Module with configuration
