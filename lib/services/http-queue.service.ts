@@ -1,50 +1,43 @@
-import { HttpService, Inject, Injectable } from '@nestjs/common';
-import {
-  QueueConfig,
-  QueueResponse,
-  QueueRequestContainer,
-} from '../interfaces';
-import { BehaviorSubject, EMPTY, Observable } from 'rxjs';
-import { filter, map, switchMap, take } from 'rxjs/operators';
+import { HttpService, Inject, Injectable } from "@nestjs/common";
+import { QueueConfig, QueueRequestContainer, QueueResponse } from "../interfaces";
+import { BehaviorSubject, EMPTY, Observable } from "rxjs";
+import { filter, map, switchMap, take } from "rxjs/operators";
 import { rateLimit } from "../rxjs";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 
 @Injectable()
 export class HttpQueueService {
-  private queueSubjects: Map<
-    string,
-    BehaviorSubject<QueueRequestContainer>
-  > = new Map();
+  private queueSubjects: Map<string, BehaviorSubject<QueueRequestContainer>> = new Map();
   private response$Map: Map<string, Observable<QueueResponse>> = new Map();
   private readonly config: QueueConfig = {
     default: {
       maxRequests: 10,
-      timespan: 10000,
-    },
+      timespan: 10000
+    }
   };
 
-  public get currentActiveRules(): number {
-    return Array.from(this.queueSubjects.keys()).length;
+  public get currentActiveRules(): string[] {
+    return Array.from(this.queueSubjects.keys());
   }
 
   constructor(
-    @Inject('QUEUE_CONFIG') _queueConfig: QueueConfig,
-    private http: HttpService,
+    @Inject("QUEUE_CONFIG") _queueConfig: QueueConfig,
+    private http: HttpService
   ) {
     this.config = { ...this.config, ..._queueConfig };
   }
 
   private doRequest<T>(
     fn: () => Observable<any>,
-    rule = 'rule',
+    rule = "rule"
   ): Observable<AxiosResponse<T>> {
     const uuid = uuidv4();
 
     return this.queueRequest(rule, { fn, uuid, rule }).pipe(
       filter((value) => value.uuid === uuid),
       take(1),
-      map(({ response }) => response),
+      map(({ response }) => response)
     );
   }
 
@@ -55,8 +48,8 @@ export class HttpQueueService {
     if (!subject || !response$) {
       subject = new BehaviorSubject<QueueRequestContainer>({
         fn: () => EMPTY,
-        uuid: '',
-        rule: '',
+        uuid: "",
+        rule: ""
       });
 
       const limiterRule = this.config.rules?.[rule] || this.config.default;
@@ -64,8 +57,8 @@ export class HttpQueueService {
       response$ = subject.pipe(
         rateLimit(limiterRule.maxRequests, limiterRule.timespan),
         switchMap((data) =>
-          data.fn().pipe(map((response) => ({ ...data, response }))),
-        ),
+          data.fn().pipe(map((response) => ({ ...data, response })))
+        )
       );
 
       this.queueSubjects.set(rule, subject);
@@ -79,7 +72,7 @@ export class HttpQueueService {
 
   public request<T = any>(
     config: AxiosRequestConfig,
-    rule = 'rule',
+    rule?: string
   ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.request(config).pipe(
@@ -87,16 +80,20 @@ export class HttpQueueService {
           data,
           status,
           statusText,
-          headers,
-        })),
+          headers
+        }))
       );
+
+    if (!rule) {
+      rule = new URL(config?.url).host;
+    }
     return this.doRequest<T>(reqFn, rule);
   }
 
   public get<T = any>(
     url: string,
     config?: AxiosRequestConfig,
-    rule = 'rule',
+    rule?: string
   ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.get(url, config).pipe(
@@ -104,16 +101,20 @@ export class HttpQueueService {
           data,
           status,
           statusText,
-          headers,
-        })),
+          headers
+        }))
       );
+
+    if (!rule) {
+      rule = new URL(url).host;
+    }
     return this.doRequest<T>(reqFn, rule);
   }
 
   public delete<T = any>(
     url: string,
     config?: AxiosRequestConfig,
-    rule = 'rule',
+    rule?: string
   ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.delete(url, config).pipe(
@@ -121,16 +122,20 @@ export class HttpQueueService {
           data,
           status,
           statusText,
-          headers,
-        })),
+          headers
+        }))
       );
+
+    if (!rule) {
+      rule = new URL(url).host;
+    }
     return this.doRequest<T>(reqFn, rule);
   }
 
   public head<T = any>(
     url: string,
     config?: AxiosRequestConfig,
-    rule = 'rule',
+    rule?: string
   ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.head(url, config).pipe(
@@ -138,9 +143,13 @@ export class HttpQueueService {
           data,
           status,
           statusText,
-          headers,
-        })),
+          headers
+        }))
       );
+
+    if (!rule) {
+      rule = new URL(url).host;
+    }
     return this.doRequest<T>(reqFn, rule);
   }
 
@@ -148,7 +157,7 @@ export class HttpQueueService {
     url: string,
     postData?: any,
     config?: AxiosRequestConfig,
-    rule = 'rule',
+    rule?: string
   ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.post(url, postData, config).pipe(
@@ -156,9 +165,13 @@ export class HttpQueueService {
           data,
           status,
           statusText,
-          headers,
-        })),
+          headers
+        }))
       );
+
+    if (!rule) {
+      rule = new URL(url).host;
+    }
     return this.doRequest<T>(reqFn, rule);
   }
 
@@ -166,7 +179,7 @@ export class HttpQueueService {
     url: string,
     putData?: any,
     config?: AxiosRequestConfig,
-    rule = 'rule',
+    rule?: string
   ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.put(url, putData, config).pipe(
@@ -174,9 +187,13 @@ export class HttpQueueService {
           data,
           status,
           statusText,
-          headers,
-        })),
+          headers
+        }))
       );
+
+    if (!rule) {
+      rule = new URL(url).host;
+    }
     return this.doRequest<T>(reqFn, rule);
   }
 
@@ -184,7 +201,7 @@ export class HttpQueueService {
     url: string,
     patchData?: any,
     config?: AxiosRequestConfig,
-    rule = 'rule',
+    rule?: string
   ): Observable<AxiosResponse<T>> {
     const reqFn = () =>
       this.http.patch(url, patchData, config).pipe(
@@ -192,9 +209,13 @@ export class HttpQueueService {
           data,
           status,
           statusText,
-          headers,
-        })),
+          headers
+        }))
       );
+
+    if (!rule) {
+      rule = new URL(url).host;
+    }
     return this.doRequest<T>(reqFn, rule);
   }
 }

@@ -56,7 +56,7 @@ describe('HttpQueueService', () => {
         const maxCnt = rangeCnt.cnt;
         const time = Date.now();
         range(1, maxCnt).subscribe((cnt) => {
-          service.get('test').subscribe(() => {
+          service.get('http://api.test.com').subscribe(() => {
             if (cnt === maxCnt) {
               const endTime = Date.now();
               expect((endTime - time) / 1000).toBeGreaterThan(
@@ -75,23 +75,37 @@ describe('HttpQueueService', () => {
 
   describe('different rules', () => {
     it('should return one active rule with one request', () => {
-      service.get('test');
+      service.get('http://api.test.com');
 
-      expect(service.currentActiveRules).toEqual(1);
+      expect(service.currentActiveRules.length).toEqual(1);
     });
 
     it('should return one active rule with two requests', () => {
-      service.get('test');
-      service.get('test2');
+      service.get('http://api.test.com');
+      service.get('http://api.test.com');
 
-      expect(service.currentActiveRules).toEqual(1);
+      expect(service.currentActiveRules.length).toEqual(1);
+      expect(service.currentActiveRules[0]).toEqual('api.test.com');
+    });
+
+    it('should return one active rule with two requests', () => {
+      service.get('http://api.test.com');
+      service.get('http://api.test2.com');
+
+      expect(service.currentActiveRules.length).toEqual(2);
+
+      expect(service.currentActiveRules[0]).toEqual('api.test.com');
+      expect(service.currentActiveRules[1]).toEqual('api.test2.com');
     });
 
     it('should return two active rules with two requests and different rulesets', () => {
-      service.get('test', {}, 'rule1');
-      service.get('test2', {}, 'rule2');
+      service.get('http://api.test.com', {}, 'rule1');
+      service.get('http://api.test.com', {}, 'rule2');
 
-      expect(service.currentActiveRules).toEqual(2);
+      expect(service.currentActiveRules.length).toEqual(2);
+
+      expect(service.currentActiveRules[0]).toEqual('rule1');
+      expect(service.currentActiveRules[1]).toEqual('rule2');
     });
   });
 });
