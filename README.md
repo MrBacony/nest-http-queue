@@ -43,8 +43,10 @@ export class AppModule {
 
 Inject the Queue Service and use it like the HttpService.
 ```typescript
-import { Injectable } from '@nestjs/common'; import { HttpQueueService } from "./http-queue.service";
-import { HttpQueueService } from '@codemonkeys-island/nest-http-queue'; import { Observable } from "rxjs"; import { AxiosResponse } from "axios";
+import { Injectable } from '@nestjs/common'; 
+import { HttpQueueService } from '@codemonkeys-island/nest-http-queue'; 
+import { Observable } from "rxjs"; 
+import { AxiosResponse } from "axios";
 
 @Injectable()
 export class RequestService {    
