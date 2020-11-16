@@ -62,13 +62,21 @@ export class RequestService {
 ```
 
 ### Supported http requests:
-- GET
-- POST
-- PUT
-- PATCH
-- HEAD
-- REQUEST
-- DELETE
+GET, POST, PUT, PATCH, HEAD, REQUEST, DELETE
+
+```typescript
+return this.httpQueueService.get<any>('https://api.url.com');
+
+return this.httpQueueService.post<any>('https://api.url.com', {});
+
+return this.httpQueueService.put<any>('https://api.url.com', {});
+
+return this.httpQueueService.patch<any>('https://api.url.com', {});
+
+return this.httpQueueService.head<any>('https://api.url.com');
+
+return this.httpQueueService.request<any>({url: 'https://api.url.com'});
+```
 
 ### Initialize Module with configuration
 Default configruation for rate limit queue is 10 requests per 10000ms and a shared queue ist disabled.
@@ -115,6 +123,25 @@ import { HttpQueueModule } from '@codemonkeys-island/nest-http-queue';
 })
 export class AppModule {
 }
+```
+
+### Use Custom Rules
+Beside of host based queues or a shared queue there is one other queue: **custom rule**
+
+#### Define Custom Rule
+```json5
+{
+  rules: {
+    "custom-rule": {
+      maxRequests: 100,
+      timespan: 100,
+    } 
+  },
+}
+``` 
+#### Usage of Custom Rule
+```typescript
+return this.httpQueueService.get<any>('https://api.url.com', {}, 'custom-rule');
 ```
 
 ## Stay in touch
